@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1517321971 source:e:\betterprogramming\5th-sem\cryptography\classical approach\caesaralgo\subesh\cpp\caesar\main.cpp
+	<iostream>
+	<string>
+	<iostream>
+	<fstream>
+	<stdlib.h>
+
