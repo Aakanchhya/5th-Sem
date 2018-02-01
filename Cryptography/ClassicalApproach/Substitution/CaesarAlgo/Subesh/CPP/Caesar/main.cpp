@@ -39,7 +39,7 @@ int main()
 {
     int key = 25;
     Caesar *s = new Caesar;
-    string plaintText = "i love you aakanchhya";
+    string plaintText = "sdsd";
     string cipherText = s->encrypt(plaintText, key);
     string decodedText = s->decrypt(cipherText, key);
     cout << "Plain Text: " << plaintText << endl;
