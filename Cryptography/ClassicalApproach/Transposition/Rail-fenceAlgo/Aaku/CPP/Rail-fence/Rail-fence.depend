@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1517589492 source:e:\5thsem\cryptography\classicalapproach\transposition\rail-fencealgo\aaku\cpp\rail-fence\main.cpp
+	<iostream>
+	<string>
+	<math.h>
+
