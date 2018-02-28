@@ -16,28 +16,27 @@ public:
     //encryption algorithm
     void encrypt(string plainText,string key1)
     {
+        bitset<64> plainText1 = 0x0123456789ABCDEF;
+       
+
         file << "## STEP 1: \r\r Create 16 subkeys, each of which is 48-bits long. \r\r";
         //bitset<64> key = 0b000100110011010001010111011110011001101110111100110111111111001;
-        bitset<64> key =   0b0001001100110100010101110111100110011011101111001101111111110001;
+        bitset<64> key =   0x133457799BBCDFF1;
 
         file << "64 bit key: \r\r";
-        print<64>(key,64,8);
+        print<64>(key,8);
         
         //Covert to 56 bit key
         bitset<56> k_56 =  pc1(key);
         file << "56 bit key: \r\r" << endl;
-        print<56>(k_56,56,7);
+        print<56>(k_56,7);
         file << "\r\r";
 
         //Shifting the keys
         bitset<28>c[17],d[17];
 
-        for(int i = 0; i < 28; i++)
-        {
-            d[0][i] = k_56[i];
-            c[0][i] = k_56[28+i];
-        }
-
+        c[0] = firstHalf<56>(k_56);
+        d[0] = secondHalf<56>(k_56);
         c[1] = circularShift<28>(c[0],1);
         d[1] = circularShift<28>(d[0],1);
         int j = 0;
@@ -55,8 +54,8 @@ public:
         file << "Shifting 56 bit key for 16 rounds \r\r";
          for(int i = 0; i <= 16; i++) {
              file << "c" << i << " & d" <<i << " : \r\r ";
-             print<28>(c[i],28,7);
-             print<28>(d[i],28,7);
+             print<28>(c[i],7);
+             print<28>(d[i],7);
          }
 
 
@@ -70,14 +69,32 @@ public:
 
         for(int i = 1; i <=16; i++) {
              file << "K" << i << " : \r\r ";
-            print<48>(k_48[i],48,6);
+            print<48>(k_48[i],6);
         }
+
+
+        file << "\r\r## STEP 2: \r\rEncoding 64 bit plain Text.\r\r";
+        file << "Plain Text: \r\r";
+        print<64>(plainText1,8);
+
+        file << "Initial Permuted Text : \r\r";
+
+        bitset<64> ipText = ipTable(plainText1);
+        print<64>(ipText,8);
+
+        bitset<32> l[17],r[17];
+        l[0] = firstHalf<64>(ipText);
+        r[0] = secondHalf<64>(ipText);
+
+        file << "Ebit : \r\r";
+        print<48>(  (ebitTable(r[0])  ^ k_48[1]) ,6);
 
     }
 
 
-
-
+   /********************************************
+   *                  STEP 1                   *
+   ********************************************/
     //PC-1 Table
     bitset<56> pc1(bitset<64> key)
     {
@@ -131,6 +148,98 @@ public:
         return bit48key;
     }
 
+    
+
+    /********************************************
+   *                  STEP 2                   *
+   ********************************************/
+
+    bitset<64> ipTable(bitset<64> text) {
+        const int IP[64] = {
+            58,   50,  42,   34,   26,  18,   10,   2,
+            60,   52,  44,   36,   28,  20,   12,   4,
+            62,   54,  46,   38,   30,  22,   14,   6,
+            64,   56,  48,   40,   32,  24,   16,   8,
+            57,   49,  41,   33,   25,  17,    9,   1,
+            59,   51,  43,   35,   27,  19,   11,   3,
+            61,   53,  45,   37,   29,  21,   13,   5,
+            63,   55,  47,   39,   31,  23,   15,   7
+        };
+        bitset<64> ipText;
+        int count = 0;
+        for (int i = 63; i >= 0; i--) {
+            ipText[i] = text[ 64 - IP[count++] ];
+        }
+        return ipText;
+
+    }
+
+    bitset<48> ebitTable(bitset<32> a) {
+        const int ebit[48] = {
+                32,   1,   2,    3,    4,   5,
+                4,    5,   6,    7,    8,   9,
+                8,    9,   10,   11,   12,  13,
+                12,   13,  14,   15,   16,  17,
+                16,   17,  18,   19,   20,  21,
+                20,   21,  22,   23,   24,  25,
+                24,   25,  26,   27,   28,  29,
+                28,   29,  30,   31,   32,   1
+        };
+        bitset<48> eR;
+        int count1 = 0;
+        for(int i = 47; i >= 0; i--)
+        {
+
+            eR[i] = a[32 - ebit[count1++]];
+
+
+        }
+        return eR;
+    }
+
+    bitset<32> function(bitset<32> r, bitset<48> k) {
+
+    }
+
+   /********************************************
+   *                  UTILS                    *
+   ********************************************/
+
+    //Merge key parts
+    template <int T>
+    bitset<2*T> mergeTwo(bitset<T> a,bitset<T> b) {
+        bitset<2*T> key;
+
+        for(int i = 0; i < 2*T; i++) {
+            if(i < T) {
+                key[i] = b[i];
+            } else
+                key[i] = a[i-T];
+        }
+
+        return key;
+
+    }
+
+
+
+
+    //Print in format
+    template <int T>
+    void print(bitset<T> a,int blockSize) {
+        file << "\t";
+        for(int i = T - 1; i >= 0; i--)
+        {
+             file << a[i] ;
+            if(i % (blockSize) == 0)
+                file << " ";
+           
+        }
+        file << "\r";
+
+    }
+
+
     //Circular Shift
     template <int T>
     bitset<T> circularShift(bitset<T> a,int num)
@@ -151,37 +260,30 @@ public:
         return a;
     }
 
-
-    //Merge key parts
     template <int T>
-    bitset<2*T> mergeTwo(bitset<T> a,bitset<T> b) {
-        bitset<2*T> key;
-
-        for(int i = 0; i < 2*T; i++) {
-            if(i < T) {
-                key[i] = b[i];
-            } else
-                key[i] = a[i-T];
+    bitset<T/2> firstHalf(bitset<T> a) {
+        bitset<T/2> first;
+        int count = 0;
+        for (int i = T/2; i < T; i++) {
+            first[count++] = a[i];
         }
-
-        return key;
-
+        return first;
+    }
+    template <int T>
+    bitset<T/2> secondHalf(bitset<T> a) {
+        bitset<T/2> second;
+        int count = 0;
+        for (int i = 0; i < T/2; i++) {
+            second[count++] = a[i];
+        }
+        return second;
     }
 
-    template <int T>
-    void print(bitset<T> a,int arrLength, int blockSize) {
-        file << "\t";
-        for(int i = arrLength - 1; i >= 0; i--)
-        {
-             file << a[i] ;
-            if(i % (blockSize) == 0)
-                file << " ";
-           
-        }
-        file << "\r";
 
-    }
+    // template <int T>
+    // bitset<T> xor(bitset<T> a, bitset<T> b) {
 
+    // }
 
 private:
     ofstream file;
