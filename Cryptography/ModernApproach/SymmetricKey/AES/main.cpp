@@ -11,11 +11,60 @@ public:
   }
 
   void algo(std::string s = "", int mode = 0) {
+    //key
     uint8_t key[16];
+    //Converting to word
     uint32_t word[44];
-    divideKey(key, 0x0f1571c947d9e859, 0x0cb7add6af7f6798);
+    //Array PlainText
+    uint8_t plainText[4][4];
+    //Array Word
+    uint8_t wordByte[11][4][4] ;
+
+    //Converting the key to 16 byte array
+    divideKey(key, 0x0f1571c947d9e859, 0x0cb7add6af7f6798,"Key");
+    
+    //Key Expansion Algo
     this->keyExpansion(key, word);
+
+    
+   //Converting  Round keys to 4x4 dimension matrix
+    for(int i = 0; i < 11; i++) {
+        uint64_t first = ( (uint64_t) word[4*i] << 32 ) | word[4*i+1];
+        uint64_t second = ( (uint64_t) word[4*i+2] << 32 ) | word[4*i+3];
+        divideArray(wordByte[i],first,second);
+    }
+
+
+    //Moving to AES Round
+    file << "\r## **AES ROUND**\r\r";
+    //Converting plain Text and Round keys to 4x4 dimension matrix
+    divideArray(plainText, 0x0123456789abcdef, 0xfedcba9876543210);
+    printArray(plainText,"Plain Text");
+    
+    // for(int i = 0; i < 4; i++) {
+    //     for (int j = 0; j < 4; j++) {
+    //         plainText[i][j] ^= wordByte[0][i][j];
+    //     }
+    // }
+
+    printArray(plainText,"Round 0");
+     for(int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            plainText[i][j] ^= wordByte[0][i][j];
+            std::cout << (int)plainText[i][j] << " " << (int)s[ (int)plainText[i][j] ] <<std::endl;
+            plainText[i][j] =  s[ (int)plainText[i][j] ];
+            
+        }
+    }
+    printArray(plainText,"Round 1");
+
+   
+
   }
+
+  /**************************************
+   *          KEY EXPANSION             *
+   **************************************/
 
   void keyExpansion(uint8_t key[16], uint32_t word[44]) {
     for (int i = 0; i < 4; i++) {
@@ -27,12 +76,47 @@ public:
       word[i] <<= 8;
       word[i] |= key[4 * i + 3];
     }
-  }
 
+    for (int i = 4; i < 44; i += 4) {
+      auto x1 = rotWord(word[i - 1]);
+      auto y1 = subWord(x1);
+      auto r1 = (uint8_t)rcon[i / 4 - 1] << 24;
+      auto z1 = y1 ^ r1;
+
+      word[i] = word[i - 4] ^ z1;
+      word[i + 1] = word[i] ^ word[i - 3];
+      word[i + 2] = word[i + 1] ^ word[i - 2];
+      word[i + 3] = word[i + 2] ^ word[i - 1];
+    }
+
+    file << "## **Key Expansion :**\n\n";
+    for (int i = 0; i < 44; i++) {
+      if (i % 4 == 0) {
+        file << "w" << i << " - w" << i + 3 << "\n";
+        file << std::endl;
+      }
+      printByte(word[i]);
+    }
+  }
+  
   auto rotWord(auto word) { return ((word << 8) | (word >> 24)); }
 
-  void divideKey(uint8_t d_key[16], uint64_t first, uint64_t second) {
+  auto subWord(auto x1) {
 
+    for (int i = 0; i < 4; i++) {
+      int shift = (32 - ((i + 1) * 8));
+      uint8_t pos = (x1 & ((uint32_t)0xff << shift)) >> shift;
+      x1 = (x1 & ~((uint32_t)0xff << shift)) | ((uint32_t)s[pos] << shift);
+    }
+    return x1;
+  }
+
+  /* ************************************
+  *                UTILS                *
+  ************************************* */
+  void divideKey(uint8_t d_key[16], uint64_t first, uint64_t second,std::string text) {
+
+    file << "**"<< text << " :**\n\r    ";
     for (int i = 0; i < 16; i++) {
       int shift = (64 - (((i + 1) % 16) * 8));
       if (i < 8)
@@ -40,22 +124,57 @@ public:
       else
         d_key[i] = (second & ((uint64_t)0xff << shift)) >> shift;
 
-      printByte(d_key[i],1);
+      printByte(d_key[i], 1);
     }
+    file << "\n\r";
+  }
+
+  void divideArray(uint8_t d_text[4][4], uint64_t first, uint64_t second) {
+      for (int j = 4-1; j >=0; j--) {
+          for (int i = 4-1; i >= 0; i--) {
+              uint8_t val;
+              if(j <= 1) {
+                d_text[i][j] = first & 0xff;
+                first >>= 8;
+              } else {
+                  d_text[i][j] = second & 0xff;
+                  second >>= 8;
+              }
+          }
+      }
+
+  }
+  auto circularShiftByte(auto word,int shift = 1) {
+    int length = sizeof(word);
+    return ((word << 8*shift) | (word >> ((length - 1) * 8*shift)));
   }
 
   void printByte(auto word, int mode = 0) {
     unsigned int length = sizeof(word);
-
+    if (!mode)
+      file << "    ";
     uint64_t divisor = pow(0x100, (length - 1));
     for (unsigned int i = 0; i < length; i++) {
       uint8_t byteVal = word / divisor;
       word = word % divisor;
       divisor /= 0x100;
-      std::cout << std::hex << (int)byteVal << " ";
+      file << std::hex << (int)byteVal
+           << ((i != (length - 1) || mode) ? " " : "");
     }
-    if(!mode)
-    std::cout << std::dec << std::endl;
+    if (!mode)
+      file << "\r";
+    file << std::dec;
+  }
+
+  void printArray(uint8_t arr[4][4], std::string text) {
+     file << "**"<< text << " :**\n\r";
+      for(int i = 0; i < 4; i++) {
+          file << "    ";
+          for (int j = 0; j < 4; j++) {
+              printByte(arr[i][j],1);
+          }
+          file << "\n";
+      }
   }
 
 private:
@@ -114,8 +233,7 @@ private:
 
 int main(int args, char *argv[]) {
   AES a;
-   a.algo();
-//   int shift = (64 - (((  2) % 16) * 8));
-//   std::cout<< std::hex << ( (0x0cb7add6af7f6798 & ((uint64_t)0xff << shift)) >> shift );
+  a.algo();
+    std::cout << std::hex << (  0x0f ^ 0x01);
   return 0;
 }
