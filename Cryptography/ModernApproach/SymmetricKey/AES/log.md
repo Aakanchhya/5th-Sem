@@ -29,52 +29,52 @@ w0 - w3
     23 ab dc 54 
     45 cd ba 32 
     67 ef 98 10 
-**Round0 :**
+**Round 0 :**
     b9 94 57 75 
     e4 8e 16 51 
     47 20 9a 3f 
     c5 d6 f5 3b 
-**Round1 :**
+**Round 1 :**
     8e 22 db 12 
     b2 f2 dc 92 
     df 80 f7 c1 
     2d c5 1e 52 
-**Round2 :**
+**Round 2 :**
     b1 c1 b cc 
     ba f3 8b 7 
     f9 1f 6a c3 
     1d 19 24 5c 
-**Round3 :**
+**Round 3 :**
     d4 11 fe f 
     3b 44 6 73 
     cb ab 62 37 
     19 b7 7 ec 
-**Round4 :**
+**Round 4 :**
     2a 47 c4 48 
     83 e8 18 ba 
     84 18 27 23 
     eb 10 a f3 
-**Round5 :**
+**Round 5 :**
     7b 5 42 4a 
     1e d0 20 40 
     94 83 18 52 
     94 c4 43 fb 
-**Round6 :**
+**Round 6 :**
     ec 1a c0 80 
     c 50 53 c7 
     3b d7 0 ef 
     b7 22 72 e0 
-**Round7 :**
+**Round 7 :**
     b1 1a 44 17 
     3d 2f ec b6 
     a 6b 2f 42 
     9f 68 f3 b1 
-**Round8 :**
+**Round 8 :**
     31 30 3a c2 
     ac 71 8c c4 
     46 65 48 eb 
     6a 1c 31 62 
-**Round9 :**
+**Round 9 :**
     4b b2 16 e2 
     85 cb 79 32 
     77 ac f2 97 
@@ -84,3 +84,94 @@ w0 - w3
     b 53 34 14 
     84 bf ab 8f 
     4a 7c 43 b9 
+**Key :**
+    f 15 71 c9 47 d9 e8 59 c b7 ad d6 af 7f 67 98 
+## **Key Expansion :**
+
+w0 - w3
+
+    f 15 71 c9    47 d9 e8 59    c b7 ad d6    af 7f 67 98w4 - w7
+
+    dc 90 37 b0    9b 49 df e9    97 fe 72 3f    38 81 15 a7w8 - w11
+
+    d2 c9 6b b7    49 80 b4 5e    de 7e c6 61    e6 ff d3 c6w12 - w15
+
+    c0 af df 39    89 2f 6b 67    57 51 ad 6    b1 ae 7e c0w16 - w19
+
+    2c 5c 65 f1    a5 73 e 96    f2 22 a3 90    43 8c dd 50w20 - w23
+
+    58 9d 36 eb    fd ee 38 7d    f cc 9b ed    4c 40 46 bdw24 - w27
+
+    71 c7 4c c2    8c 29 74 bf    83 e5 ef 52    cf a5 a9 efw28 - w31
+
+    37 14 93 48    bb 3d e7 f7    38 d8 8 a5    f7 7d a1 4aw32 - w35
+
+    48 26 45 20    f3 1b a2 d7    cb c3 aa 72    3c be b 38w36 - w39
+
+    fd d 42 cb    e 16 e0 1c    c5 d5 4a 6e    f9 6b 41 56w40 - w43
+
+    b4 8e f3 52    ba 98 13 4e    7f 4d 59 20    86 26 18 76## **AES ROUND****Plain Text :**
+    ff 8 69 64 
+    b 53 34 14 
+    84 bf ab 8f 
+    4a 7c 43 b9 
+**Round 0 :**
+    c9 30 13 20 
+    22 59 95 a5 
+    8a 28 3 a5 
+    a9 9d 7e 2a 
+**Round 1 :**
+    4a 4c f 44 
+    97 4b 1d 2 
+    d8 21 56 fb 
+    17 8d e0 5e 
+**Round 2 :**
+    c9 2a 48 68 
+    8a 7b 46 73 
+    89 e9 fb 3 
+    5e 91 59 31 
+**Round 3 :**
+    51 d7 a2 3d 
+    52 86 6f ab 
+    39 4a 4b 46 
+    67 e7 64 5f 
+**Round 4 :**
+    f3 bf 60 5b 
+    51 c5 9a 1e 
+    94 dc 9f 8b 
+    e8 57 21 1b 
+**Round 5 :**
+    d5 d2 e6 13 
+    af 6f ac 4e 
+    2a cd d7 64 
+    89 77 e3 dc 
+**Round 6 :**
+    85 89 47 ff 
+    cc 2b 7b 49 
+    1e 92 1a ce 
+    31 ae 45 8d 
+**Round 7 :**
+    de 4f 60 8f 
+    16 6 26 bd 
+    24 67 9d 57 
+    e5 98 32 7a 
+**Round 8 :**
+    a7 21 6a 83 
+    cc 32 3a 7c 
+    9a c1 56 b2 
+    e5 da c 66 
+**Round 9 :**
+    e ce f2 d9 
+    36 72 6b 2b 
+    34 25 17 55 
+    ae b6 4e 88 
+**ROUND 10 :**
+    1 89 fe 76 
+    23 ab dc 54 
+    45 cd ba 32 
+    67 ef 98 10 
+**REf :**
+    f 47 c af 
+    15 d9 b7 7f 
+    71 e8 ad 67 
+    c9 59 d6 98 
