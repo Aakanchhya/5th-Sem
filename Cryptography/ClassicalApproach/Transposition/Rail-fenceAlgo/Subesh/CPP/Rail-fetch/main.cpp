@@ -61,21 +61,44 @@ public:
     * @return {string} - Cipher Text
     */
     string encrypt2(string plainText,int numRails) {
-/*        string cipherText = "";
         plainText = removeWhiteSpace(plainText);
+        int length = plainText.length();
+        int inc = 1;
+        int row = -1;
+        string cipher = "";
 
+        string rowContent[100];
 
-        for ( int i = 0; i < numRails; i++) {
-            int max
-            for (int j = 0; j < maxLength; j++ ) {
-                if( ( j*numRails + i) < plainText.length() )
-                    cipherText += plainText[j*numRails + i];
-                else
-                    cipherText += '*';
-
-            }
+        for(int i =0; i < numRails; i++) {
+            rowContent[i] = "";
         }
-        return cipherText; */
+
+        for(int i = 0;i < length; i++) {
+            if(row  == 0) {
+                inc = 1;
+            }
+            else if(row == numRails-1 ) {
+                inc = -1;
+            }
+            row += inc;
+            rowContent[row] += plainText[i];
+            cout << row;
+
+        }
+        if(row != 0 && row != (numRails-1) ) {
+            do {
+                     row += inc;
+                rowContent[row] += '*';
+
+            }while(row != 0 && row != (numRails-1) );
+        }
+
+        for(int i =0; i < numRails; i++) {
+            cipher += rowContent[i] ;
+        }
+        //cout << cipher;
+        return cipher;
+
     }
 
 
@@ -99,7 +122,71 @@ public:
         return decoded;
     }
 
+    string daigonalEncrypt(string sym, int number)
+{
+    cout << "I am inside diagonal Encryption" << endl ;
+    string symbol = removeWhiteSpace(sym);
+    string cipher[100];
+    for(int i=0; i<100; i++)
+    {
+        cipher[i] = "";
+    }
 
+    string cipherText = "";
+
+    //Looping to get cipher text
+    int row = 0;
+    int count = 0;
+
+    for(int column=0; column<symbol.length(); column++)
+    {
+        cout << endl << "I am inside i loop: column = " << column << endl ;
+        if(count < number)
+        {
+            cout << endl << "Inside if";
+            cipher[row] += symbol[column];
+            cout << endl << "cipher = " << cipher[row] ;
+            cout << endl << "row = " << row << endl ;
+            row++;
+            count++;
+        }
+        else
+        {
+            if(row == number)
+            {
+                row--;
+            }
+            cout << endl << "Inside else";
+            row--;
+            cipher[row] += symbol[column];
+            cout << endl << "cipher = " << cipher[row] ;
+            cout << endl << "row = " << row << endl;
+            count ++;
+            if(row == 0)
+            {
+                count =1;
+                row = 1;
+            }
+        }
+    }
+
+    cout << row ;
+
+    //For extra symbol
+    for(int i=0; i<row; i++)
+    {
+        row ++;
+        cipher[row] += '*';
+    }
+
+    //Concatinating strings
+    for(int i=0; i<number; i++)
+    {
+        cipherText += cipher[i];
+    }
+
+    return cipherText;
+}
 
 
 
@@ -113,6 +200,7 @@ public:
         }
         return removed;
     }
+
 };
 
 
@@ -120,8 +208,8 @@ int main()
 {
     RailFetch r;
     int rails = 3;
-    string message = "HE IS MOST WANTED CRIMINAL";
-    string cipher1 =  r.encrypt1(message,rails);
+    string message = "HEISMOSTWANTEDCRIMINAL";
+    string cipher1 =  r.daigonalEncrypt(message,rails);
     string decrypt1 =  r.decrypt1(cipher1,rails);
     cout << "Message: " << message << endl << "Rails: " << rails <<  endl << "Encrypt1: " << cipher1 << endl
     << "Decrypt1: " << decrypt1 << endl;

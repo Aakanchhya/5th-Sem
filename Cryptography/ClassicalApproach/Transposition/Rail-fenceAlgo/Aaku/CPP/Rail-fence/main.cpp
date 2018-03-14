@@ -77,7 +77,7 @@ string Rail_Fence::straightDecrypt(string symbol, int number)
 
 string Rail_Fence::daigonalEncrypt(string sym, int number)
 {
-    cout << "I am inside diagonal Encryption" << endl ;
+    cout << endl << "I am inside diagonal Encryption" << endl ;
     string symbol = removeWhiteSpace(sym);
     string cipher[100];
     for(int i=0; i<100; i++)
@@ -90,18 +90,16 @@ string Rail_Fence::daigonalEncrypt(string sym, int number)
     //Looping to get cipher text
     int row = 0;
     int count = 0;
+    int check = 0;
 
     for(int column=0; column<symbol.length(); column++)
     {
-        cout << endl << "I am inside i loop: column = " << column << endl ;
         if(count < number)
         {
-            cout << endl << "Inside if";
             cipher[row] += symbol[column];
-            cout << endl << "cipher = " << cipher[row] ;
-            cout << endl << "row = " << row << endl ;
             row++;
             count++;
+            check = 1;
         }
         else
         {
@@ -109,25 +107,32 @@ string Rail_Fence::daigonalEncrypt(string sym, int number)
             {
                 row--;
             }
-            cout << endl << "Inside else";
             row--;
             cipher[row] += symbol[column];
-            cout << endl << "cipher = " << cipher[row] ;
-            cout << endl << "row = " << row << endl;
             count ++;
             if(row == 0)
             {
                 count =1;
                 row = 1;
             }
+            check = 2;
         }
     }
 
-    cout << row ;
-
-    for(int i=0; i<number; i++)
+    //Adding *
+    if(check == 2)
     {
-
+        for(int i=row; i>0; i--)
+        {
+            cipher[row-1] += '*';
+        }
+    }
+    if(check == 1)
+    {
+        for(int i=row; i<number; i++)
+        {
+            cipher[row+1] += '*';
+        }
     }
 
     //Concatinating strings
@@ -139,17 +144,62 @@ string Rail_Fence::daigonalEncrypt(string sym, int number)
     return cipherText;
 }
 
+string Rail_Fence::diagonalDecrypt(string sym, int number)
+{
+    cout << endl << "I am inside diagonal Decryption" << endl ;
+    string symbol = removeWhiteSpace(sym);
+    string cipher[100][100];
+    for(int i=0; i<100; i++)
+    {
+        for(int j=0; j<100; j++)
+        {
+            cipher[i][j] = " ";
+        }
+    }
+    string cipherText = " ";
+
+    //Calculating gaps
+    int gaps = 0;
+    if(number == 2)
+        gaps = 1;
+    else if(number == 3)
+        gaps = 3;
+    else
+    {
+        if(number % 2 == 0)
+            gaps = number+1;
+        else
+            gaps = number+2;
+    }
+
+    int row = 0;
+    for(int column = 0; column < symbol.length(); column++)
+    {
+        int col = 0 ;
+        if(row == 0)
+        {
+            cipher[row][col] = symbol[column];
+            col += gaps;
+            if(col >= symbol.length())
+                row++;
+        }
+    }
+}
+
 int main()
 {
     Rail_Fence R;
+
+    //Straight Rail_Fence
     string encryptedCode, decryptedCode;
     encryptedCode = R.straightEncrypt("he is most wanted Criminal",3);
     cout << "Encrypted Code = " << encryptedCode << endl ;
     decryptedCode = R.straightDecrypt(encryptedCode,3);
     cout << "Decrypted Code = " << decryptedCode << endl ;
 
+    //Diagonal Rail_Fence
     string encrypt ;
     encrypt = R.daigonalEncrypt("they will attack on tomorrow",3);
-    cout << endl << encrypt;
+    cout << "Encrypted Code = " << encrypt << endl ;
     return 0;
 }
