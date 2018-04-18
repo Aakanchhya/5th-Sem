@@ -1,8 +1,21 @@
 import List from './list.js'
+import BubbleSort from './bubble-sort.js';
+import SelectionSort from './selection-sort.js';
+import QuickSort from './quick-sort.js';
+import MergeSort from './merge-sort.js';
 
 let list1 = new List();
 
-list1.list = [1,2,3,4,5,6];
+list1.list = [1,4,2,6,5,2,1,2,212,12,12,3123,34,2435,46,2,1,123,1];
 
-list1.swap(1,2);
 
+
+let bSort = new BubbleSort(list1.list);
+let sSort = new SelectionSort(list1.list);
+let qSort = new QuickSort (list1.list);
+let mSort = new MergeSort (list1.list);
+console.log(
+    mSort.sort( (i) => {
+    return i
+}) 
+)

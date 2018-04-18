@@ -47,5 +47,16 @@ export default class List {
         this._list[j] = temp;
     }
 
-    
+    at(index)  {
+        let length = this.list.length;
+        //if the indexes are greater or equal to length they don't lie in the List.
+        if( index >= length )
+           return undefined;
+        return this._list[index];
+    }
+
+    storeAt(index,val) {
+        this._list[index] = val;
+
+    }
 }
