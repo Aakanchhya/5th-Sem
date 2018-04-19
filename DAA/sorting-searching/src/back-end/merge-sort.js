@@ -10,7 +10,7 @@ export default class MergeSort {
     this.value = value;
     this.action = [];
     this.mergeSort(0, length - 1);
-    return this._list.list;
+    return this.action;
   }
 
   mergeSort(p, r) {
@@ -47,9 +47,23 @@ export default class MergeSort {
 
     for (let k = p; k <= r; k++) {
       if (L[i].val <= R[j].val) {
+        this.action.push({
+          type:"LIST_STORE",
+          payload:{
+            i:k,
+            val:L[i].item
+          }
+        })
         this._list.storeAt(k, L[i].item);
         i++;
       } else {
+        this.action.push({
+          type:"LIST_STORE",
+          payload:{
+            i:k,
+            val:R[j].item
+          }
+        })
         this._list.storeAt(k, R[j].item);
         j++;
       }

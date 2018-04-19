@@ -32,3 +32,11 @@ export const compareItem = (i,j) => {
         payload:[i,j]
     }
 }
+
+//This action highlights the stored
+export const storeItem = (i,val )=> {
+    return {
+        type: "LIST_STORE",
+        payload:{i,val}
+    }
+}

@@ -18,6 +18,7 @@ const initial = {
     PIVOT: -1,
     COMPARE: [-1, -1],
     CURSOR: -1,
+    STORE:{}
     
   }
 };
@@ -51,6 +52,11 @@ const ListReducer = (state = initial, action) => {
     case "LIST_SET_CURSOR":
       state = { ...state };
       state.mode.CURSOR = action.payload;
+      return state;
+    case "LIST_STORE":
+      state = {...state}
+      state.collection.storeAt(action.payload.i,action.payload.val);
+      state.mode.STORE = action.payload;
       return state;
 
     default:
