@@ -3,6 +3,7 @@ import BubbleSort from './bubble-sort.js';
 import SelectionSort from './selection-sort.js';
 import QuickSort from './quick-sort.js';
 import MergeSort from './merge-sort.js';
+import HeapSort from './heap-sort.js';
 
 let list1 = new List();
 
@@ -14,8 +15,9 @@ let bSort = new BubbleSort(list1.list);
 let sSort = new SelectionSort(list1.list);
 let qSort = new QuickSort (list1.list);
 let mSort = new MergeSort (list1.list);
+let hSort = new HeapSort(list1.list);
 console.log(
-    mSort.sort( (i) => {
+    hSort.sort( (i) => {
     return i
 }) 
 )

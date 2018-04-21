@@ -9,19 +9,18 @@ export default class BubbleSort {
     sort(compare) {
         let length = this._list.list.length;
         let action = [];
-        let count = 0;
-        console.log(length);
-        for(let i = length - 1; i > 0; i-- ) {
-            for(let j = 0; j < i; j++) {
+
+        for (let i = length - 1; i > 0; i--) {
+            for (let j = 0; j < i; j++) {
                 action.push({
-                    type:"LIST_COMPARE",
-                    payload:[j,j+1]
+                    type: "LIST_COMPARE",
+                    payload: [j, j + 1]
                 })
-                if(compare(this._list.at(j),this._list.at(j+1))) {
-                    this._list.swap(j,j+1);
+                if (compare(this._list.at(j), this._list.at(j + 1))) {
+                    this._list.swap(j, j + 1);
                     action.push({
-                        type:"LIST_SWAP",
-                        payload:[j,j+1]
+                        type: "LIST_SWAP",
+                        payload: [j, j + 1]
                     })
                 }
             }

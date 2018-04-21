@@ -1,7 +1,5 @@
 import List from "../../back-end/list";
-let heights = Array(100)
-  .fill(1)
-  .map((val, index) => val * index);
+let heights = Array(100).fill(1).map((val, index) => val * index);
 
 console.log(heights);
 let temp = [];
@@ -18,50 +16,62 @@ const initial = {
     PIVOT: -1,
     COMPARE: [-1, -1],
     CURSOR: -1,
-    STORE:{}
-    
+    STORE: {},
+    BOUNDARY: [-1, -1],
+    COMPLETE: 0
+
   }
 };
 
 const ListReducer = (state = initial, action) => {
   switch (action.type) {
-    //Rendering SWAP
+    // Rendering SWAP
     case "LIST_SWAP":
-      state = { ...state };
+      state = {...state};
       let i = action.payload.pop();
       let j = action.payload.pop();
       state.collection.swap(i, j);
       state.mode.SWAP = [i, j];
-      return state;
+      break;
 
-    //Rendering COMPARE
+    // Rendering COMPARE
     case "LIST_COMPARE":
-      state = { ...state };
+      state = {...state};
       i = action.payload.pop();
       j = action.payload.pop();
       state.mode.COMPARE = [i, j];
       state.mode.SWAP = [-1, -1];
-      return state;
-
-    //Rendering PIVOT
+      break;
+    // Rendering PIVOT
     case "LIST_SET_PIVOT":
-      state = { ...state };
+      state = {...state};
       state.mode.PIVOT = action.payload;
-      return state;
-    //Rendering PIVOT
+      break;
+    // Rendering PIVOT
     case "LIST_SET_CURSOR":
-      state = { ...state };
+      state = {...state};
       state.mode.CURSOR = action.payload;
-      return state;
+      break;
+    // Rendering Store
     case "LIST_STORE":
-      state = {...state}
-      state.collection.storeAt(action.payload.i,action.payload.val);
+      state = {...state};
+      state.collection.storeAt(action.payload.i, action.payload.val);
       state.mode.STORE = action.payload;
-      return state;
-
+      break;
+    // Rendering end Points
+    case "LIST_BOUNDARY":
+      state = {...state};
+      state.mode.BOUNDARY = [...action.payload];
+      break;
+    // Rendering complete
+    case "LIST_COMPLETE":
+      state = {...state};
+      state.mode.COMPLETE = action.payload;
+      break;
     default:
-      return state;
+      break;
   }
+  return state;
 };
 
 export default ListReducer;

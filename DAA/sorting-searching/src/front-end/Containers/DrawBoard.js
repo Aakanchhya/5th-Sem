@@ -1,11 +1,21 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Rectangle from "../Components/Rectangle";
-import { swapItem, compareItem, storeItem } from "../Actions/ListActions";
-import BubbleSort from "../../back-end/bubble-sort";
-import SelectionSort from "../../back-end/selection-sort";
-import QuickSort from "../../back-end/quick-sort";
-import MergeSort from "../../back-end/merge-sort";
+import {
+  swapItem,
+  compareItem,
+  storeItem,
+  setPivot,
+  setBoundary,
+  completeList
+} from "../Actions/ListActions";
+import {
+  bubbleSort,
+  mergeSort,
+  quickSort,
+  selectionSort,
+  heapSort
+} from "../../back-end/sort-algo";
 
 class DrawBoard extends Component {
   render() {
@@ -14,11 +24,15 @@ class DrawBoard extends Component {
     const status = this.props.data.mode;
     list.forEach((val, index) => {
       let mode = -1;
-      if (status.SWAP.findIndex(val1 => index === val1) !== -1) mode = 1;
-      else if (status.COMPARE.findIndex(val1 => index === val1) !== -1) mode = 2;
-      else if (status.PIVOT === index) mode = 3
-      else if (status.CURSOR === index) mode = 4
-      else if (status.STORE.i && status.STORE.i === index) mode = 5
+      if (status.COMPLETE === 1) mode = 5;
+      else if (status.SWAP.findIndex(val1 => index === val1) !== -1) mode = 1;
+      else if (status.COMPARE.findIndex(val1 => index === val1) !== -1)
+        mode = 3;
+      else if (status.PIVOT === index) mode = 2;
+      else if (status.CURSOR === index) mode = 4;
+      else if (status.STORE.i && status.STORE.i === index) mode = 1;
+      else if (status.BOUNDARY.findIndex(val1 => val1 === index) !== -1)
+        mode = 4;
       data.push(
         <Rectangle key={index} mode={mode} pos={index} height={val.height} />
       );
@@ -26,7 +40,6 @@ class DrawBoard extends Component {
 
     return (
       <svg
-        
         viewBox=" 0 0 1070 900"
         style={{ background: "black" }}
         onClick={() => {
@@ -39,14 +52,7 @@ class DrawBoard extends Component {
   }
 
   async sortRender() {
-    let bSort = new BubbleSort(this.props.data.collection.list);
-    let sSort = new SelectionSort(this.props.data.collection.list);
-    let qSort = new QuickSort (this.props.data.collection.list);
-    let mSort = new MergeSort (this.props.data.collection.list);
-
-    let action = mSort.sort( (i) =>{
-        return i.height
-    } );
+    let action = heapSort(this.props.data.collection.list);
 
     console.log(action.length);
 
@@ -55,7 +61,7 @@ class DrawBoard extends Component {
         setTimeout(() => {
           this.performAction(val);
           resolve();
-        }, 1);
+        }, 100);
       });
     }
   }
@@ -69,8 +75,15 @@ class DrawBoard extends Component {
         this.props.swap(action.payload.pop(), action.payload.pop());
         break;
       case "LIST_STORE":
-        this.props.store(action.payload.i,action.payload.val)
+        this.props.store(action.payload.i, action.payload.val);
         break;
+      case "LIST_SET_PIVOT":
+        this.props.pivot(action.payload);
+        break;
+      case "LIST_BOUNDARY":
+        this.props.boundary(action.payload.pop(), action.payload.pop());
+      case "LIST_COMPLETE":
+        this.props.complete(action.payload);
       default:
         break;
     }
@@ -78,9 +91,7 @@ class DrawBoard extends Component {
 }
 
 const mapStateToProps = state => {
-  return {
-    data: state.listReducer
-  };
+  return { data: state.listReducer };
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -90,8 +101,17 @@ const mapDispatchToProps = dispatch => ({
   compare(i, j) {
     dispatch(compareItem(i, j));
   },
-  store(i,val) {
-    dispatch(storeItem(i,val))
+  store(i, val) {
+    dispatch(storeItem(i, val));
+  },
+  pivot(i) {
+    dispatch(setPivot(i));
+  },
+  boundary(i, j) {
+    dispatch(setBoundary(i, j));
+  },
+  complete(val) {
+    dispatch(completeList(val));
   }
 });
 export default connect(mapStateToProps, mapDispatchToProps)(DrawBoard);

@@ -26,6 +26,14 @@ export default class MergeSort {
     let n2 = r - q;
     let L = [];
     let R = [];
+
+    this.action.push({
+      type:"LIST_SET_PIVOT",
+          payload:q
+    },{
+      type:"LIST_BOUNDARY",
+      payload:[p,r]
+    })
     for (let i = 0; i < n1; i++) {
       L[i] = {
         item: this._list.at(p + i),
@@ -68,5 +76,12 @@ export default class MergeSort {
         j++;
       }
     }
+    this.action.push({
+      type:"LIST_SET_PIVOT",
+          payload:-1
+    },{
+      type:"LIST_BOUNDARY",
+      payload:[-1,-1]
+    })
   }
 }

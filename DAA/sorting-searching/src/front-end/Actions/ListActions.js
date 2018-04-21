@@ -40,3 +40,21 @@ export const storeItem = (i,val )=> {
         payload:{i,val}
     }
 }
+//This action sets the boundary positions
+
+export const setBoundary = (i,j) => {
+    return {
+        type: "LIST_BOUNDARY",
+        payload :[i,j]
+        
+    }
+}
+
+//Complete
+
+export const completeList = val => {
+    return {
+        type: "LIST_COMPLETE",
+        payload:val
+    }
+}
