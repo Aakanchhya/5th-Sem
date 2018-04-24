@@ -3,7 +3,7 @@ import List from "./list.js";
 export default class QuickSort {
   constructor(list) {
     this._list = new List([...list]);
-    this.action;
+   
   }
 
   sort(compare) {

@@ -8,17 +8,17 @@ export default class HeapSort {
 
   sort(value) {
     this.value = value;
-    let action = [];
     this.length = this._list.list.length;
     this.heapSize = this.length;
     this.buildMaxHeap();
     for (let i = this.length - 1; i >= 1; i--) {
       this.heapExtractMax();
     }
+    
     return this.action;
   }
   buildMaxHeap() {
-    for (let i = parseInt(this.length / 2) - 1; i >= 0; i--) this.maxHeapify(i);
+    for (let i = parseInt(this.length / 2,10) - 1; i >= 0; i--) this.maxHeapify(i);
   }
 
   maxHeapify(i) {

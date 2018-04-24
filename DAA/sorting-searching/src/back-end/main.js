@@ -4,6 +4,7 @@ import SelectionSort from './selection-sort.js';
 import QuickSort from './quick-sort.js';
 import MergeSort from './merge-sort.js';
 import HeapSort from './heap-sort.js';
+import OrderStatistics from './order-statistics.js';
 
 let list1 = new List();
 
@@ -16,8 +17,7 @@ let sSort = new SelectionSort(list1.list);
 let qSort = new QuickSort (list1.list);
 let mSort = new MergeSort (list1.list);
 let hSort = new HeapSort(list1.list);
+let oS = new OrderStatistics(list1.list);
 console.log(
-    hSort.sort( (i) => {
-    return i
-}) 
-)
+    oS.search(15)
+) 

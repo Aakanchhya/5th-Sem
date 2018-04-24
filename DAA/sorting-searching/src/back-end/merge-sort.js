@@ -15,8 +15,9 @@ export default class MergeSort {
 
   mergeSort(p, r) {
     if (p < r) {
-      let q = parseInt((p + r) / 2);
-      this.mergeSort(p, q), this.mergeSort(q + 1, r);
+      let q = parseInt((p + r) / 2,10);
+      this.mergeSort(p, q);
+      this.mergeSort(q + 1, r);
       this.merge(p, q, r);
     }
   }
