@@ -1,12 +1,17 @@
 import { connect } from "react-redux";
-import MenuBar from "../../components/drawable-components/ui/menu";
-import SettingsBar from "../../components/drawable-components/ui/settings-bar";
-import ToolBar from "../../components/drawable-components/ui/tool-bar";
+
 import React, { Component } from "react";
 import Node from "../../components/drawable-components/Node";
-import UndirectedArc from "../../components/drawable-components/UndirectedArc";
-import DirectedArc from "../../components/drawable-components/DirectedArc";
-import { setDragItem, moveDraggedItem } from "../../actions/drawable-actions";
+import BreadthFirstSearch from "../../../back-end/uninformed-search/breadth-first-search";
+import Arc from "../../components/drawable-components/arc";
+import {
+  setDragItem,
+  moveDraggedItem,
+  setSelectedItem,
+  addNode,
+  setGraph,
+  setScale
+} from "../../actions/drawable-actions";
 class DrawableGraphContainer extends Component {
   componentWillMount() {
     window.addEventListener("resize", () => this.setState({}));
@@ -32,14 +37,54 @@ class DrawableGraphContainer extends Component {
               left: 0
             }}
             onMouseMove={e => {
-              if (this.props.drawBoard.dragItem !== -1) this.props.move(e);
+              if (
+                this.props.drawBoard.mode === 0 &&
+                this.props.drawBoard.dragItem !== -1
+              )
+                this.props.move(e);
             }}
             onMouseUp={() => {
-              if (this.props.drawBoard.dragItem !== -1) this.props.dragItem(-1);
+              if (
+                this.props.drawBoard.mode === 0 &&
+                this.props.drawBoard.dragItem !== -1
+              )
+                this.props.dragItem(-1);
             }}
+            onMouseDown={evt => {
+              if (
+                this.props.drawBoard.mode === 0 ||
+                this.props.drawBoard.mode === 2
+              )
+                this.props.setSelected(-1);
+              else if (this.props.drawBoard.mode === 1) this.props.newNode(evt);
+            }}
+            // onDoubleClick={this.search.bind(this)}
           >
-            {dat}
+            <g transform={`scale(${this.props.drawBoard.scale})`}>{dat}</g>
           </svg>
+        </div>
+        <div className=" position-absolute p-1" style={{ top: 0 }}>
+          <div
+            className="btn-group"
+            hidden={this.props.drawBoard.selectedItems.length ? true : false}
+          >
+            <button
+              className="btn btn-dark"
+              onClick={() => {
+                this.props.changeScale(0.05);
+              }}
+            >
+              <i className="fa fa-plus" />
+            </button>
+            <button
+              className="btn btn-secondary"
+              onClick={() => {
+                this.props.changeScale(-0.05);
+              }}
+            >
+              <i className="fa fa-minus" />
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -47,27 +92,24 @@ class DrawableGraphContainer extends Component {
 
   getComponents(graph) {
     let dat = graph.arcs.map((arc, index) => {
-      if (arc.mode) {
-        return (
-          <DirectedArc
-            key={index}
-            x1={graph.nodes[arc.from].x}
-            y1={graph.nodes[arc.from].y}
-            x2={graph.nodes[arc.to].x}
-            y2={graph.nodes[arc.to].y}
-          />
-        );
-      } else {
-        return (
-          <UndirectedArc
-            key={index}
-            x1={graph.nodes[arc.from].x}
-            y1={graph.nodes[arc.from].y}
-            x2={graph.nodes[arc.to].x}
-            y2={graph.nodes[arc.to].y}
-          />
-        );
-      }
+      return (
+        <Arc
+          key={index}
+          index={index}
+          x1={graph.nodes[arc.from].x}
+          y1={graph.nodes[arc.from].y}
+          x2={graph.nodes[arc.to].x}
+          y2={graph.nodes[arc.to].y}
+          arcMode={graph.arcMode}
+          mode={this.props.drawBoard.mode}
+          setSelected={this.props.setSelected}
+          isSelected={
+            this.props.drawBoard.selectedItems.findIndex(
+              val => val.pos === index && val.type === "Arc"
+            ) !== -1
+          }
+        />
+      );
     });
 
     dat.push(
@@ -80,6 +122,14 @@ class DrawableGraphContainer extends Component {
             setDrag={this.props.dragItem}
             move={this.move}
             index={index}
+            mode={this.props.drawBoard.mode}
+            color={node.color}
+            isSelected={
+              this.props.drawBoard.selectedItems.findIndex(
+                val => val.pos === index && val.type === "Node"
+              ) !== -1
+            }
+            setSelected={this.props.setSelected}
           />
         );
       })
@@ -87,6 +137,8 @@ class DrawableGraphContainer extends Component {
 
     return dat;
   }
+
+  
 }
 
 const mapStateToProps = state => ({
@@ -99,6 +151,18 @@ const mapDispatchToProps = dispatch => ({
   },
   move(evt) {
     dispatch(moveDraggedItem(evt));
+  },
+  setSelected(pos) {
+    dispatch(setSelectedItem(pos));
+  },
+  newNode(evt) {
+    dispatch(addNode(evt));
+  },
+  changeGraph(graph) {
+    dispatch(setGraph(graph));
+  },
+  changeScale(scale) {
+    dispatch(setScale(scale));
   }
 });
 

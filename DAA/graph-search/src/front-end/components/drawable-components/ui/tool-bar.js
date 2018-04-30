@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { changeMode } from "../../../actions/drawable-actions";
-
+import { changeMode,setGraph } from "../../../actions/drawable-actions";
+import BreadthFirstSearch from '../../../../back-end/uninformed-search/breadth-first-search'
 const mapStateToProps = (state, ownProps) => ({
   drawBoard: state.movableReducer
 });
@@ -9,6 +9,9 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = dispatch => ({
   setMode(mode) {
     dispatch(changeMode(mode));
+  },
+  changeGraph(graph) {
+    dispatch(setGraph(graph));
   }
 });
 
@@ -76,8 +79,35 @@ class ToolBar extends Component {
         >
           {arcSVG}
         </ToolButton>
+        <ToolButton
+          isActive={this.props.drawBoard.mode === 3}
+          setMode={this.props.setMode}
+          mode={3}
+          extra={this.search.bind(this)}
+        >
+          <polygon
+            xmlns="http://www.w3.org/2000/svg"
+            points="9.2,7.3 9.2,18.5 12.2,15.6 12.6,15.5 17.4,15.5 "
+          />
+        </ToolButton>
       </div>
     );
+  }
+  async search() {
+    console.log(this.props);
+    const { drawBoard } = this.props;
+
+    let search = new BreadthFirstSearch(drawBoard.graph);
+    let list = search.search(drawBoard.start, drawBoard.goal, false, 1);
+    console.log(list.length, list);
+    for (let li of list) {
+      await new Promise(resolve => {
+        setTimeout(() => {
+          this.props.changeGraph(li);
+          resolve();
+        }, 1000);
+      });
+    }
   }
 }
 
@@ -88,6 +118,7 @@ const ToolButton = props => {
       className={`btn btn-light ${props.isActive ? "active" : " "}`}
       onClick={() => {
         if (!props.isActive) props.setMode(props.mode);
+        if(props.extra) props.extra();
       }}
     >
       <svg

@@ -6,8 +6,8 @@ export default class BreadthFirstSearch {
   }
 
   search(initial, goal, diagonal = false, steps = 2) {
-    let start = this._graph.at(initial.i, initial.j);
-    console.log(start);
+    let start = this._graph.at(initial);
+    
     let store = [];
     start.color = "grey";
     start.predecessor = undefined;
@@ -18,11 +18,12 @@ export default class BreadthFirstSearch {
 
     while (queue.length !== 0) {
       let u = queue.shift();
-      if (u.pos.i === goal.i && u.pos.j === goal.j) {
-        final = u;
-        break;
-      }
-      for (let v of this._graph.getAdjacent(u,diagonal)) {
+      // if (u.pos.i === goal.i && u.pos.j === goal.j) {
+      //   final = u;
+      //   break;
+      // }
+
+      for (let v of this._graph.getAdjacent(u)) {
         if (v.color === "white") {
           v.color = "Gainsboro";
           v.predecessor = u;
@@ -40,14 +41,14 @@ export default class BreadthFirstSearch {
     }
     if (store.length !== this._graph.graph.length)
       store.push(this._graph.graph);
-    if (final) {
-      let path = final.predecessor;
-      while (path.predecessor) {
-        path.color = "YellowGreen";
-        path = path.predecessor;
-      }
-    }
-    store.push(this._graph.graph);
+    // if (final) {
+    //   let path = final.predecessor;
+    //   while (path.predecessor) {
+    //     path.color = "YellowGreen";
+    //     path = path.predecessor;
+    //   }
+    // }
+    // store.push(this._graph.graph);
     return store;
   }
 }

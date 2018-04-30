@@ -16,3 +16,18 @@ export const changeMode = (mode) => ({
     type: "MOVABLE_CHANGE_MODE",
     payload:mode
 });
+
+export const addNode = (evt) => ({
+    type: "MOVABLE_ADD_NODE",
+    payload:evt
+})
+
+export const setGraph = (graph) =>({
+    type: "MOVABLE_SET_GRAPH",
+    payload:graph
+})
+
+export const setScale = (scale) => ({
+    type: "MOVABLE_SET_SCALE",
+    payload:scale
+})
