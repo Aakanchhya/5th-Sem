@@ -1,9 +1,11 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
+
 import { connect } from "react-redux";
 import Rectangle from "../components/graph-components/rectangle";
 import { setList } from "../actions/graph-actions";
 import BreadthFirstSearch from "../../back-end/uninformed-search/breadth-first-search";
+// eslint-disable-next-line
+import DepthFirstSearch from "../../back-end/uninformed-search/depth-first-search";
 export class DrawBoard extends Component {
   constructor(props) {
     super(props);
@@ -12,12 +14,13 @@ export class DrawBoard extends Component {
   
   async search() {
     const { graphData } = this.props;
+    
     let search = new BreadthFirstSearch(
       graphData.graph,
       graphData.maxRow,
       graphData.maxCol
     );
-    let list = search.search(graphData.initial, graphData.goal,true,5);
+    let list = search.search(graphData.initial, graphData.goal,false,5);
     console.log(list.length, list);
     for (let li of list) {
       await new Promise(resolve => {
