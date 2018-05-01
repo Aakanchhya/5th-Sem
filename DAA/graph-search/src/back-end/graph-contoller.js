@@ -64,10 +64,12 @@ export default class GraphController {
     this._graph.arcs.forEach(arc => {
       if (arc.from === node.pos) {
         arr.push(arc.to);
-      } else if (arc.too === node.pos && this._graph.arcMode === 0) {
+      } else if (arc.to === node.pos && this._graph.arcMode === 0) {
         arr.push(arc.from);
       }
+      console.log("subesh",this._graph.arcMode);
     });
+
     return arr
       .map(pos => {
         return this.at(pos);

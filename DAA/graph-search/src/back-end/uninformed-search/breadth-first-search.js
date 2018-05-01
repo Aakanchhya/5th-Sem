@@ -9,13 +9,13 @@ export default class BreadthFirstSearch {
     let start = this._graph.at(initial);
     
     let store = [];
-    start.color = "grey";
+    start.color = "Gainsboro";
     start.predecessor = undefined;
     start.d = 0;
     let final = undefined;
     let queue = [start];
     let prevD = 0;
-
+    store.push(this._graph.graph);
     while (queue.length !== 0) {
       let u = queue.shift();
       // if (u.pos.i === goal.i && u.pos.j === goal.j) {
