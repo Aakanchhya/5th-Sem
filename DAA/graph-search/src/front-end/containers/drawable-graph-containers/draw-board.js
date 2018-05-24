@@ -124,6 +124,7 @@ class DrawableGraphContainer extends Component {
             index={index}
             mode={this.props.drawBoard.mode}
             color={node.color}
+            name={node.pos}
             isSelected={
               this.props.drawBoard.selectedItems.findIndex(
                 val => val.pos === index && val.type === "Node"

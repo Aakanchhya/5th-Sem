@@ -5,32 +5,30 @@ export default class DepthFirstSearch {
     this._graph = new GraphController(graph, maxRow, maxCol);
   }
   search(initial, goal, diagonal = false, steps = 2) {
-    let start = this._graph.at(initial.i, initial.j);
+    let start = this._graph.at(initial);
     console.log(start);
     this.store = [];
-    start.color = "grey";
     start.predecessor = undefined;
     start.d = 0;
     // let final = undefined;
     // let queue = [start];
     // let prevD = 0;
-   
-    this.dfs(start,diagonal);
+    this.dfs(start);
 
     return this.store;
   }
 
-  dfs(u,diagonal) {
-    u.color = "grey";
+  dfs(u) {
+    u.color = "Gainsboro";
     this.store.push(this._graph.graph);
-    for (let v of this._graph.getAdjacent(u,diagonal)) {
+    for (let v of this._graph.getAdjacent(u)) {
         if(v.color === "white") {
             v.predecessor = u;
-            this.dfs(v,diagonal);
+            this.dfs(v);
 
         }
     }
-    u.color = "black";
+    u.color = "lightcyan";
     this.store.push(this._graph.graph);
   }
 }

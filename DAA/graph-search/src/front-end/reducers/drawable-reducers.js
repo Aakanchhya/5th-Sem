@@ -1,10 +1,11 @@
+// {x:100,y:100,pos:0,color:"white"},{x:200,y:200,pos:0,color:"white"}{from:0,to:1}
 let initialMove = {
   graph: {
     type: 1,
     nodes: [],
     arcs: [],
 
-    arcMode: 0
+    arcMode: 1
   },
   start: 0,
   goal: 1,
@@ -12,7 +13,7 @@ let initialMove = {
   dragItem: -1,
   stack: [],
   mode: 0,
-  algo: 0,
+  algo: 1,
   scale: 1
 };
 export const movableReducer = (state = initialMove, action) => {
@@ -65,7 +66,8 @@ export const movableReducer = (state = initialMove, action) => {
         color: "white",
         predecessor: undefined,
         d: 0,
-        pos: state.graph.nodes.length
+        pos: state.graph.nodes.length,
+       
       });
       return state;
     case "MOVABLE_SET_GRAPH":

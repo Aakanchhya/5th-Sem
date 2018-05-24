@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { changeMode,setGraph } from "../../../actions/drawable-actions";
-import BreadthFirstSearch from '../../../../back-end/uninformed-search/breadth-first-search'
+import { changeMode, setGraph } from "../../../actions/drawable-actions";
+import BreadthFirstSearch from "../../../../back-end/uninformed-search/breadth-first-search";
+import DepthFirstSearch from "../../../../back-end/uninformed-search/depth-first-search";
 const mapStateToProps = (state, ownProps) => ({
   drawBoard: state.movableReducer
 });
@@ -97,7 +98,7 @@ class ToolBar extends Component {
     console.log(this.props);
     const { drawBoard } = this.props;
 
-    let search = new BreadthFirstSearch(drawBoard.graph);
+    let search = new DepthFirstSearch(drawBoard.graph);
     let list = search.search(drawBoard.start, drawBoard.goal, false, 1);
     console.log(list.length, list);
     for (let li of list) {
@@ -105,7 +106,7 @@ class ToolBar extends Component {
         setTimeout(() => {
           this.props.changeGraph(li);
           resolve();
-        }, 1000);
+        }, 500);
       });
     }
   }
@@ -118,7 +119,7 @@ const ToolButton = props => {
       className={`btn btn-light ${props.isActive ? "active" : " "}`}
       onClick={() => {
         if (!props.isActive) props.setMode(props.mode);
-        if(props.extra) props.extra();
+        if (props.extra) props.extra();
       }}
     >
       <svg

@@ -69,7 +69,7 @@ export default class GraphController {
       }
       console.log("subesh",this._graph.arcMode);
     });
-
+    console.log(arr);
     return arr
       .map(pos => {
         return this.at(pos);

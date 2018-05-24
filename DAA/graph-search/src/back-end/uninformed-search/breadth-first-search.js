@@ -7,7 +7,7 @@ export default class BreadthFirstSearch {
 
   search(initial, goal, diagonal = false, steps = 2) {
     let start = this._graph.at(initial);
-    
+
     let store = [];
     start.color = "Gainsboro";
     start.predecessor = undefined;

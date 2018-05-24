@@ -6,6 +6,6 @@ import {movableReducer} from './reducers/drawable-reducers'
 export default createStore(
   combineReducers({graphReducer,movableReducer}),
   {},
-  applyMiddleware(createLogger())
+  // applyMiddleware(createLogger())
   
 );
